@@ -64,7 +64,10 @@ services:
       - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
 
   django-pg-zero-downtime-migrations-tests:
-    build: .
+    build:
+      context: .
+      args:
+        PYTHON_VERSION: "${PYTHON_VERSION:-3.10}"
     depends_on:
       - pg17
       - pg16
