@@ -134,6 +134,20 @@ def test_bad_flow_add_column_with_notnull():
 
 @skip_for_default_django_backend
 @pytest.mark.django_db(transaction=True)
+@modify_settings(INSTALLED_APPS={"append": "tests.apps.bad_flow_add_column_with_notnull_app"})
+@override_settings(
+    ZERO_DOWNTIME_MIGRATIONS_RAISE_FOR_UNSAFE=True,
+    ZERO_DOWNTIME_MIGRATIONS_SAFE_MIGRATIONS=[
+        ("bad_flow_add_column_with_notnull_app", "0002_add_field_notnull"),
+    ],
+)
+def test_bad_flow_add_column_with_notnull_treated_as_safe():
+    # forward
+    call_command("migrate", "bad_flow_add_column_with_notnull_app")
+
+
+@skip_for_default_django_backend
+@pytest.mark.django_db(transaction=True)
 @modify_settings(INSTALLED_APPS={"append": "tests.apps.bad_flow_change_char_type_that_unsafe_app"})
 @override_settings(ZERO_DOWNTIME_MIGRATIONS_RAISE_FOR_UNSAFE=True)
 def test_bad_flow_change_char_type_that_unsafe():
